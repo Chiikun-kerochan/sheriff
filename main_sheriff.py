@@ -55,17 +55,15 @@ async def on_message(message):
                 ml.append(k)
             for member in vcmember:
                 mm.append(member.id)
-                y +=1
+                
                 guild = client.get_guild(1076105584329375765)#guild id
                 h = guild.get_member(member.id)
                 if h.bot == False:
                     print(h)
                     await h.move_to(channel=None,reason="配信が始まるため")
-                    y += 1
-                else:
-                    y += 1
-                if len(ml) == y: #no
-                    break
+                    
+                #if len(ml) == y: #no
+                 #   break
             await current_vc.disconnect()
             if ls_count == x:
                 break
