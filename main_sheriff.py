@@ -35,8 +35,7 @@ async def on_message(message):
     x = -1
     y = -1
     # メッセージ送信者がボットの場合は無視する
-    if message.author.bot:
-        return
+    
     if message.content == "Ajpam379vcoff":
         for v in client.get_all_channels():
             #print(v.name)
@@ -48,6 +47,7 @@ async def on_message(message):
             ls_count = len(ls)
             channel = client.get_channel(ls[x])
             print(channel)
+            time.sleep(600)
             await channel.connect()
             current_vc = discord.utils.get(client.voice_clients,guild=message.guild)
             time.sleep(1)
