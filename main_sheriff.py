@@ -65,7 +65,7 @@ async def on_message(message):
                 else:
                     y +=1
                     
-                if len(ml) == x: #no
+                if len(ml) == y: #no
                     break
             await current_vc.disconnect()
             if ls_count == x:
