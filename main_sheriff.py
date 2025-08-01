@@ -36,8 +36,7 @@ async def on_message(message):
     y = -1
     # メッセージ送信者がボットの場合は無視する
     
-    if message.content =="Ajpam379vcoff":
-        time.sleep(60)
+    if message.content.startswith("Ajpam379vcoff"):
         for v in client.get_all_channels():
             #print(v.name)
             if isinstance(v,discord.VoiceChannel):
