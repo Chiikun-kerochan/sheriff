@@ -61,6 +61,8 @@ async def on_message(message):
                 if h.bot == False:
                     print(h)
                     await h.move_to(channel=None,reason="配信が始まるため")
+                else:
+                    y +=1
                     
                 if len(ml) == x: #no
                     break
