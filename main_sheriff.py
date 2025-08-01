@@ -1,14 +1,14 @@
 import discord
 import os
 from discord import app_commands
-#import dotenv
+import dotenv
 import time
 
-#dotenv.load_dotenv()
+dotenv.load_dotenv()
 
 
 
-TOKEN = "token"
+TOKEN = os.getenv("token")
 
 intents = discord.Intents.all()#適当に。
 client = discord.Client(intents=intents)
