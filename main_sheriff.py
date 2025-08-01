@@ -3,7 +3,7 @@ import os
 from discord import app_commands
 import dotenv
 import time
-
+from keep_alive import keep_alive
 dotenv.load_dotenv()
 
 
@@ -68,5 +68,5 @@ async def on_message(message):
             if ls_count == x:
                 break
         await message.channel.send("任務完了")
-
+keep_alive()
 client.run(TOKEN)
