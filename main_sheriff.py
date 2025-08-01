@@ -47,7 +47,7 @@ async def on_message(message):
             ls_count = len(ls)
             channel = client.get_channel(ls[x])
             print(channel)
-            time.sleep(30)
+            time.sleep(10)
             await channel.connect()
             current_vc = discord.utils.get(client.voice_clients,guild=message.guild)
             time.sleep(1)
