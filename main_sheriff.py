@@ -37,10 +37,12 @@ async def on_message(message):
     # メッセージ送信者がボットの場合は無視する
     
     if message.content =="Ajpam379vcoff":
+        time.sleep(60)
         for v in client.get_all_channels():
             #print(v.name)
             if isinstance(v,discord.VoiceChannel):
                 ls.append(v.id) #vcチャンネルのチャンネルid
+                
 
         for i in ls:
             x += 1
