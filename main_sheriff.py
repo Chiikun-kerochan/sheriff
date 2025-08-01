@@ -62,7 +62,7 @@ async def on_message(message):
                     print(h)
                     await h.move_to(channel=None,reason="配信が始まるため")
                     
-                if len(ml) == y: #no
+                if len(ml) == x: #no
                     break
             await current_vc.disconnect()
             if ls_count == x:
