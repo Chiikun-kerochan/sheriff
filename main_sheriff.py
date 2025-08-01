@@ -49,7 +49,7 @@ async def on_message(message):
             print(channel)
             await channel.connect()
             current_vc = discord.utils.get(client.voice_clients,guild=message.guild)
-            time.sleep(1)
+            time.sleep(5)
             vcmember = current_vc.channel.members
             for k in vcmember:
                 ml.append(k)
