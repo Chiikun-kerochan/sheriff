@@ -9,7 +9,6 @@ dotenv.load_dotenv()
 
 
 TOKEN = os.getenv("token")
-ph_id = os.getenv("ph_id")
 aikotoba = os.getenv("aikotoba")
 
 intents = discord.Intents.all()#適当に。
@@ -71,4 +70,5 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
