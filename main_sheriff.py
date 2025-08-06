@@ -57,20 +57,23 @@ async def on_message(message):
 async def on_message(message):
     guild = client.get_guild(1076105584329375765) 
     zatsudan = client.get_channel(1076482232342020096)
-    ph = guild.get_member(1077145641601474630) #ふぁれんのユーザーid
+    ph = guild.get_member(1018781055215468624) #ふぁれんのユーザーid
+    pr_ch = client.get_channel(1292500305992224869)
     t = 0
     if message.author == ph and message.channel == zatsudan:
         if  message.content == "はじめます":
             channel = client.get_channel(1324766308062986280) #botチャンネル
+            
             print("スタート")
-            for i in range(1):
+            for i in range(10):
                 await asyncio.sleep(60)
-                t += 10
-                await message.channel.send(f"{t}分経過")
-            await channel.send("ok")
+                t += 1
+                await pr_ch.send(f"ふぁれんが開始を宣言してから{t}分経過")
+            await channel.send(aikotoba)
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
