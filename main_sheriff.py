@@ -38,14 +38,12 @@ async def on_message(message):
     if message.author == ph and message.channel == zatsudan:
         if  message.content == "はじめます":
             channel = client.get_channel(1324766308062986280) #botチャンネル
-            
             print("スタート")
             for i in range(1):
                 await asyncio.sleep(60)
                 t += 1
                 await pr_ch.send(f"{t}分経過")
             await channel.send(aikotoba)
-
     ls = []
     ml = []
     if message.content == aikotoba:
@@ -71,6 +69,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
