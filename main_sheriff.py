@@ -62,13 +62,14 @@ async def on_message(message):
         if  message.content == "はじめます":
             channel = client.get_channel(1324766308062986280) #botチャンネル
             print("スタート")
-            for i in range(10):
+            for i in range(1):
                 await asyncio.sleep(60)
                 t += 10
                 await message.channel.send(f"{t}分経過")
-            await channel.send(aikotoba)
+            await channel.send("ok")
 
 keep_alive()
 client.run(TOKEN)
+
 
 
