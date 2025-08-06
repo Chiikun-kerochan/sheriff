@@ -4,6 +4,7 @@ from discord import app_commands
 import dotenv
 import time
 from keep_alive import keep_alive
+import asyncio
 dotenv.load_dotenv()
 
 
@@ -70,6 +71,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
