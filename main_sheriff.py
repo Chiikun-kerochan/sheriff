@@ -9,6 +9,8 @@ dotenv.load_dotenv()
 
 
 TOKEN = os.getenv("token")
+ph_id = os.getenv("ph_id")
+aikotoba = os.getenv("aikotoba")
 
 intents = discord.Intents.all()#適当に。
 client = discord.Client(intents=intents)
@@ -30,44 +32,43 @@ async def on_ready():
 async def on_message(message):
     ls = []
     ml = []
-    mm = []
-    #k = []
-    x = -1
-    y = -1
-    # メッセージ送信者がボットの場合は無視する
-    
-    if message.content.startswith("Ajpam379vcoff"):
+    if message.content == aikotoba:
+        current_vc = discord.utils.get(client.voice_clients,guild=message.guild)
         for v in client.get_all_channels():
-            #print(v.name)
-            if isinstance(v,discord.VoiceChannel):
+            if isinstance(v,discord.VoiceChannel): #vcか確認
                 ls.append(v.id) #vcチャンネルのチャンネルid
-                
-
-        for i in ls:
-            x += 1
-            ls_count = len(ls)
-            channel = client.get_channel(ls[x])
+        for i in range(0,len(ls)):
+            channel = client.get_channel(ls[i])
             print(channel)
             await channel.connect()
-            current_vc = discord.utils.get(client.voice_clients,guild=message.guild)
-            time.sleep(5)
-            vcmember = current_vc.channel.members
-            for k in vcmember:
-                ml.append(k)
-            for member in vcmember:
-                mm.append(member.id)
-    
-                guild = client.get_guild(1076105584329375765)#guild id
-                h = guild.get_member(member.id)
-                if h.bot == False:
-                    print(h)
-                    await h.move_to(channel=None,reason="配信が始まるため")
-                    
-                if len(ml) == y: #no
-                    break
+            for k in channel.members:
+                if k is not None:
+                    ml.append(k)  ##20250806追加
             await current_vc.disconnect()
-            if ls_count == x:
-                break
+        for w in range(0,len(ml)):
+            guild = client.get_guild(1076105584329375765)#guild id
+            h = guild.get_member(ml[w].id)
+            if h.bot == False:
+                print(h)
+                await h.move_to(channel=None,reason="配信が始まるため")
         await message.channel.send("任務完了")
+
+@client.event
+async def on_message(message):
+    guild = client.get_guild(1076105584329375765) 
+    zatsudan = client.get_channel(1076482232342020096)
+    ph = guild.get_member(1077145641601474630) #ふぁれんのユーザーid
+    t = 0
+    if message.author == ph and message.channel == zatsudan:
+        if  message.content == "はじめます":
+            channel = client.get_channel(1324766308062986280) #botチャンネル
+            print("スタート")
+            for i in range(10):
+                await asyncio.sleep(60)
+                t += 10
+                await message.channel.send(f"{t}分経過")
+            await channel.send(aikotoba)
+
 keep_alive()
 client.run(TOKEN)
+
