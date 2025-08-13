@@ -60,7 +60,7 @@ async def hajime_process(guild, zatsudan, ph, pr_ch, message):
 async def on_message(message):
     if message.author == client.user:
         return
-    guild = message.guild
+    guild = client.get_guild(1076105584329375765)
     zatsudan = client.get_channel(1076482232342020096)
     ph = guild.get_member(951411435370582016)
     pr_ch = client.get_channel(1292500305992224869)
@@ -71,6 +71,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
