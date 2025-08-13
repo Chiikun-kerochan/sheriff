@@ -3,7 +3,7 @@ WORKDIR /bot
 COPY requirements.txt /bot/
 RUN pip install -r requirements.txt
 COPY . /bot
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "sheriff:app"]
 CMD python main.py
+
 
 
