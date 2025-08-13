@@ -32,7 +32,7 @@ async def hajime_process(guild, zatsudan, ph, message):
     if message.author == ph and message.channel == zatsudan:
         if  message.content == "はじめます":
             print("スタート")
-            await asyncio.sleep(60)
+            await asyncio.sleep(30)
             #await pr_ch.send(f"{t}分経過")
             for channel in client.get_all_channels():
                 if isinstance(channel,discord.VoiceChannel) and channel.members: #vcか確認
@@ -44,8 +44,8 @@ async def hajime_process(guild, zatsudan, ph, message):
                         await asyncio.sleep(0.5)
                     except discord.Forbidden:
                         print(f"権限が不足しているため移動できませんでした。")
-                    #except discord.HTTPException:
-                        #print(f"HTTPエラーが発生しました: ")
+                    except discord.HTTPException:
+                        print(f"HTTPエラーが発生しました: ")
         await message.channel.send("任務完了")
 
 @client.event
@@ -63,6 +63,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
