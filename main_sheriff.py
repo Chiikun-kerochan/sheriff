@@ -27,7 +27,7 @@ async def on_ready():
     print('ログインしました')
 
 # メッセージ受信時の処理
-async def hajime_process(guild, zatsudan, ph, pr_ch, message):
+async def hajime_process(guild, zatsudan, ph, message):
     t = 0
     members_in_vc = []
     if message.author == ph and message.channel == zatsudan:
@@ -36,7 +36,7 @@ async def hajime_process(guild, zatsudan, ph, pr_ch, message):
             for i in range(1):
                 await asyncio.sleep(60)
                 t += 1
-            await pr_ch.send(f"{t}分経過")
+            #await pr_ch.send(f"{t}分経過")
             for channel in client.get_all_channels():
                 if isinstance(channel,discord.VoiceChannel) and channel.members: #vcか確認
                     members_in_vc.extend(channel.members)
@@ -58,14 +58,15 @@ async def on_message(message):
     guild = message.guild
     zatsudan = client.get_channel(1076482232342020096)
     ph = guild.get_member(951411435370582016)
-    pr_ch = client.get_channel(1292500305992224869)
+    #pr_ch = client.get_channel(1292500305992224869)
     
     # ここで重い処理をバックグラウンドで開始
     if message.author == ph and message.channel == zatsudan and message.content == "はじめます":
-        asyncio.create_task(heavy_process(guild, zatsudan, ph, pr_ch, message))
+        asyncio.create_task(heavy_process(guild, zatsudan, ph,  message))
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
