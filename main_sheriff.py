@@ -43,7 +43,7 @@ async def on_message(message):
                 await asyncio.sleep(60)
                 t += 1
                 await pr_ch.send(f"{t}分経過")
-            for channel in guild.channels:
+            for channel in client.get_all_channels():
                 if isinstance(channel,discord.VoiceChannel) and channel.members: #vcか確認
                     members_in_vc.extend(channel.members)
             for w in members_in_vc:
@@ -58,6 +58,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
