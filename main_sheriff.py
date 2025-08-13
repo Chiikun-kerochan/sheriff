@@ -28,8 +28,7 @@ async def on_ready():
     print('ログインしました')
 
 # メッセージ受信時の処理
-@client.event
-async def on_message(message):
+async def hajime_process(guild, zatsudan, ph, pr_ch, message):
     guild = message.guild
     zatsudan = client.get_channel(1076482232342020096)
     ph = guild.get_member(951411435370582016) #ふぁれんのユーザーid=1018781055215468624
@@ -57,8 +56,22 @@ async def on_message(message):
                         print(f"HTTPエラーが発生しました: {e}")
         await message.channel.send("任務完了")
 
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    guild = message.guild
+    zatsudan = client.get_channel(1076482232342020096)
+    ph = guild.get_member(951411435370582016)
+    pr_ch = client.get_channel(1292500305992224869)
+    
+    # ここで重い処理をバックグラウンドで開始
+    if message.author == ph and message.channel == zatsudan and message.content == "はじめます":
+        asyncio.create_task(heavy_process(guild, zatsudan, ph, pr_ch, message))
+
 keep_alive()
 client.run(TOKEN)
+
 
 
 
