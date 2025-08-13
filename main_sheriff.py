@@ -30,45 +30,35 @@ async def on_ready():
 # メッセージ受信時の処理
 @client.event
 async def on_message(message):
-    guild = client.get_guild(1076105584329375765) 
+    guild = message.guild
     zatsudan = client.get_channel(1076482232342020096)
     ph = guild.get_member(951411435370582016) #ふぁれんのユーザーid=1018781055215468624
     pr_ch = client.get_channel(1292500305992224869)
     t = 0
+    members_in_vc = []
     if message.author == ph and message.channel == zatsudan:
         if  message.content == "はじめます":
-            channel = client.get_channel(1324766308062986280) #botチャンネル
             print("スタート")
             for i in range(1):
                 await asyncio.sleep(60)
                 t += 1
                 await pr_ch.send(f"{t}分経過")
-            await channel.send(aikotoba)
-    ls = []
-    ml = []
-    if message.content == aikotoba:
-        for v in client.get_all_channels():
-            if isinstance(v,discord.VoiceChannel): #vcか確認
-                ls.append(v.id) #vcチャンネルのチャンネルid
-        for i in range(0,len(ls)):
-            channel = client.get_channel(ls[i])
-            print(channel)
-            await channel.connect()
-            for k in channel.members:
-                if k is not None:
-                    ml.append(k)  ##20250806追加
-            current_vc = discord.utils.get(client.voice_clients,guild=message.guild)
-            await current_vc.disconnect()
-        for w in range(0,len(ml)):
-            guild = client.get_guild(1076105584329375765)#guild id
-            h = guild.get_member(ml[w].id)
-            if h.bot == False:
-                print(h)
-                await h.move_to(channel=None,reason="配信が始まるため")
+            for channel in guild.channels:
+                if isinstance(channel,discord.VoiceChannel) and channel.members: #vcか確認
+                    members_in_vc.extend(channel.members)
+            for w in members_in_vc:
+                if w.bot == False:
+                    try:
+                        await w.move_to(channel=None,reason="配信が始まるため")
+                    except discord.Forbidden:
+                        print(f"権限が不足しているため移動できませんでした。")
+                    except discord.HTTPException as e:
+                        print(f"HTTPエラーが発生しました: {e}")
         await message.channel.send("任務完了")
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
