@@ -44,8 +44,8 @@ async def hajime_process(guild, zatsudan, ph, message):
                         await asyncio.sleep(0.5)
                     except discord.Forbidden:
                         print(f"権限が不足しているため移動できませんでした。")
-                    except discord.HTTPException as e:
-                        print(f"HTTPエラーが発生しました: {e}")
+                    except discord.HTTPException:
+                        print(f"HTTPエラーが発生しました: ")
         await message.channel.send("任務完了")
 
 @client.event
@@ -63,6 +63,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
