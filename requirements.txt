@@ -4,3 +4,4 @@ audioop-lts
 dotenv
 PyNaCl
 requests
+gunicorn
