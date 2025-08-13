@@ -28,14 +28,11 @@ async def on_ready():
 
 # メッセージ受信時の処理
 async def hajime_process(guild, zatsudan, ph, message):
-    t = 0
     members_in_vc = []
     if message.author == ph and message.channel == zatsudan:
         if  message.content == "はじめます":
             print("スタート")
-            for i in range(1):
-                await asyncio.sleep(60)
-                t += 1
+            await asyncio.sleep(60)
             #await pr_ch.send(f"{t}分経過")
             for channel in client.get_all_channels():
                 if isinstance(channel,discord.VoiceChannel) and channel.members: #vcか確認
@@ -66,6 +63,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
