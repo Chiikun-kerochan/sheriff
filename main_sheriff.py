@@ -59,10 +59,11 @@ async def on_message(message):
     
     # ここで重い処理をバックグラウンドで開始
     if message.author == ph and message.channel == zatsudan and message.content == "はじめます":
-        asyncio.create_task(heavy_process(guild, zatsudan, ph,  message))
+        asyncio.create_task(hajime_process(guild, zatsudan, ph,  message))
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
