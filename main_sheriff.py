@@ -10,9 +10,8 @@ dotenv.load_dotenv()
 
 
 TOKEN = os.getenv("token")
-aikotoba = os.getenv("aikotoba")
 
-intents = discord.Intents.all()#適当に。
+intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 intents.message_content = True
@@ -67,6 +66,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
