@@ -50,6 +50,7 @@ async def on_message(message):
                 if w.bot == False:
                     try:
                         await w.move_to(channel=None,reason="配信が始まるため")
+                        await asyncio.sleep(0.5)
                     except discord.Forbidden:
                         print(f"権限が不足しているため移動できませんでした。")
                     except discord.HTTPException as e:
@@ -58,6 +59,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
