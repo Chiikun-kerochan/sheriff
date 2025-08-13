@@ -29,10 +29,6 @@ async def on_ready():
 
 # メッセージ受信時の処理
 async def hajime_process(guild, zatsudan, ph, pr_ch, message):
-    guild = client.get_guild(1076105584329375765)
-    zatsudan = client.get_channel(1076482232342020096)
-    ph = guild.get_member(951411435370582016) #ふぁれんのユーザーid=1018781055215468624
-    pr_ch = client.get_channel(1292500305992224869)
     t = 0
     members_in_vc = []
     if message.author == ph and message.channel == zatsudan:
@@ -71,6 +67,7 @@ async def on_message(message):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
