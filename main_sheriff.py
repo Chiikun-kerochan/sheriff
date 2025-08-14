@@ -32,8 +32,7 @@ async def hajime_process(guild, zatsudan, ph, message):
     if message.author == ph and message.channel == zatsudan:
         if  message.content == "はじめます":
             print("スタート")
-            await asyncio.sleep(30)
-            #await pr_ch.send(f"{t}分経過")
+            await asyncio.sleep(600)
             for channel in client.get_all_channels():
                 if isinstance(channel,discord.VoiceChannel) and channel.members: #vcか確認
                     members_in_vc.extend(channel.members)
@@ -44,8 +43,8 @@ async def hajime_process(guild, zatsudan, ph, message):
                         await asyncio.sleep(0.5)
                     except discord.Forbidden:
                         print(f"権限が不足しているため移動できませんでした。")
-                    except discord.HTTPException:
-                        print(f"HTTPエラーが発生しました: ")
+                    except discord.HTTPException as e:
+                        print(f"HTTPエラーが発生しました:{e} ")
         await message.channel.send("任務完了")
 
 @client.event
@@ -54,15 +53,22 @@ async def on_message(message):
         return
     guild = message.guild
     zatsudan = client.get_channel(1076482232342020096)
-    ph = guild.get_member(951411435370582016)
-    #pr_ch = client.get_channel(1292500305992224869)
+    ph = guild.get_member(1018781055215468624)
     
     # ここで重い処理をバックグラウンドで開始
     if message.author == ph and message.channel == zatsudan and message.content == "はじめます":
         asyncio.create_task(hajime_process(guild, zatsudan, ph,  message))
 
+@tree.command(name="ping",description="ping値を測定")
+async def pingchi(inter : discord.Interaction):
+    raw_ping = client.latency
+    ping = round(raw_ping * 1000)
+    await inter.response.send_message(f"もっこりす🐿のPing値:{ping}ms")
+
+
 keep_alive()
 client.run(TOKEN)
+
 
 
 
