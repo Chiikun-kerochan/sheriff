@@ -63,11 +63,12 @@ async def on_message(message):
 async def pingchi(inter : discord.Interaction):
     raw_ping = client.latency
     ping = round(raw_ping * 1000)
-    await inter.response.send_message(f"もっこりす🐿のPing値:{ping}ms")
+    await inter.response.send_message(f"Ping値:{ping}ms")
 
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
