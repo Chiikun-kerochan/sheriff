@@ -63,11 +63,22 @@ async def on_message(message):
 async def pingchi(inter : discord.Interaction):
     raw_ping = client.latency
     ping = round(raw_ping * 1000)
-    await inter.response.send_message(f"Ping値:{ping}ms")
+    await inter.response.send_message(f"🏓{ping}ms")
+
+@tree.command(name="invite_url",description="ふぁれんサーバーへの招待リンクを作成する")
+async def invite_ph(inter:discord.Interaction):
+    url = "https://discord.gg/mdyRcy8gWt"
+    try:
+        await inter.response.send_message(f"{url}")
+    except discord.Forbidden:
+        await inter.response.send_message("権限不足")
+    except discord.HTTPException :
+        await inter.response.send_message("HTTP error occurred:")
 
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
