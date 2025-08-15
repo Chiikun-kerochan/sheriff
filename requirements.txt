@@ -5,3 +5,4 @@ dotenv
 PyNaCl
 requests
 gunicorn
+typing
