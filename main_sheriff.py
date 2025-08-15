@@ -5,6 +5,7 @@ import dotenv
 import time
 from keep_alive import keep_alive
 import asyncio
+from typing import Literal
 dotenv.load_dotenv()
 
 
@@ -75,9 +76,23 @@ async def invite_ph(inter:discord.Interaction):
     except discord.HTTPException :
         await inter.response.send_message("HTTP error occurred:")
 
+@tree.command(name="introduction_phalen" , description="ふぁれんが活動しているSNSを紹介します")
+async def intro_ph(inter:discord.Interaction , mode:Literal["Youtube","X","Twitch","全て"]):
+    twi_url = "https://twitter.com/ponko2ninja"
+    Youtube_url = "https://youtube.com/channel/UC4BPiLhjSLozx2qWoR6yrhg?si=V62dclJo0PrxeOYZ"
+    twitch_url = "https://www.twitch.tv/ponko2ninja"
+    if mode == "Youtube":
+        await inter.response.send_message(f"{Youtube_url}")
+    elif mode =="Twitch":
+        await inter.response.send_message(f"{twitch_url}")
+    elif mode == "X":
+        await inter.response.send_message(f"{twi_url}")
+    elif mode =="全て":
+        await inter.response.send_message(f"{Youtube_url} \n{twitch_url} \n{twi_url}")
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
