@@ -1,9 +1,22 @@
 FROM python:3.13
 WORKDIR /bot
 COPY requirements.txt /bot/
+
+# voicevoxエンジンのダウンロードと解凍
+RUN apt-get update && apt-get install -y wget unzip
+RUN wget https://github.com/VOICEVOX/voicevox_engine/releases/download/0.14.0/voicevox_engine-linux-x64-cpu-0.14.0.zip \
+    && unzip voicevox_engine-linux-x64-cpu-0.14.0.zip \
+    && rm voicevox_engine-linux-x64-cpu-0.14.0.zip
+
+# FFmpegをインストール
+RUN apt-get update && apt-get install -y ffmpeg
+# 作業ディレクトリを設定
+WORKDIR /app
+
 RUN pip install -r requirements.txt
 COPY . /bot
-CMD python main.py
+CMD ["/bin/sh", "-c", "./voicevox_engine/run --host 0.0.0.0 & python main.py]
+
 
 
 
