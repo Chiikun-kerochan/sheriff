@@ -101,6 +101,13 @@ async def on_message(message):
                 asyncio.create_task(read_text(str(message.content)  ))
 
 @client.event
+async def on_member_join(member):
+    welcome_channel_id = 1076105585428267101  
+    channel = client.get_channel(welcome_channel_id)
+    if channel:
+        await channel.send(f'{member.mention}さん、{member.guild.name}へようこそ！\nサーバー規約を読んでからゆっくりしていってね')
+
+@client.event
 async def on_voice_state_update(member, before, after): #自動退出機能
     # BotがVCにいて、メンバーがVCから退出したときにチェック
     if member.id != client.user.id and before.channel and client.user in before.channel.members:
@@ -166,6 +173,7 @@ async def m_ai(interaction:discord.Interaction, text : str):
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
