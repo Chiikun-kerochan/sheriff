@@ -7,6 +7,7 @@ from keep_alive import keep_alive
 import asyncio
 from typing import Literal
 import aiohttp
+from google import genai
 
 dotenv.load_dotenv()
 TOKEN = os.getenv("token")
@@ -155,8 +156,17 @@ async def intro_ph(inter:discord.Interaction , mode:Literal["Youtube","X","Twitc
     elif mode =="全て":
         await inter.response.send_message(f"{Youtube_url} \n{twitch_url} \n{twi_url}")
 
+@tree.command(name= "mokkori_ai" ,description="もっこりすが質問をgeminiに丸投げします")
+async def m_ai(interaction:discord.Interaction, text : str):
+    await interaction.response.defer()
+    clie = genai.Client(api_key=os.environ["API_KEY"])
+    responce = clie.models.generate_content(model="gemini-2.0-flash",contents=text)
+    # APIを利用
+    await interaction.followup.send(f"あなたの質問 : {text}\n回答 : {responce.text}")
+
 keep_alive()
 client.run(TOKEN)
+
 
 
 
