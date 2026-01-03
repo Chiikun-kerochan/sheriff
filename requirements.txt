@@ -7,3 +7,13 @@ requests
 gunicorn
 typing
 google-genai
+aiohttp
+httplib2
+oauth2client
+google
+googleapiclient
+datetime
+schedule
+threading
+apiclient
+asyncio
