@@ -8,6 +8,13 @@ import asyncio
 from typing import Literal
 import aiohttp
 from google import genai
+from apiclient import discovery
+from httplib2 import Http
+from oauth2client import service_account
+from googleapiclient.errors import HttpError
+import datetime
+import schedule
+import threading
 
 dotenv.load_dotenv()
 TOKEN = os.getenv("token")
@@ -440,6 +447,7 @@ schedule_thread.start()
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
