@@ -359,7 +359,7 @@ async def mkgf(inter:discord.Interaction, password:str, when:str, what:str ):
     value1 = []
     pl_optB = []
     value1B = []
-    if mess.poll and password == "a": #日時だけのとき
+    if mess.poll and password == "abi": #日時だけのとき
         for i in range(1,mess_counter+1 ):
             pl_opt.append(mess.poll.get_answer(id=i).text) #選択肢の名前 
             value = {}    
@@ -433,8 +433,8 @@ channel_id = 1456890395970768951
 cont = "https://media.discordapp.net/attachments/1160135713480785921/1181510300034400339/140_20231205171931.png?ex=695979f6&is=69582876&hm=8b9f8c771b598fc1abde8c89f036e629633bacc69cb13e80a169b5b7a659095f&=&format=webp&quality=lossless"
 Use = client.get_channel(channel_id)
 
-schedule.every().day.at("21:30").do(lambda: schedule_job(f"{cont}\n 21:30です。配信の調子はいかがでしょうか。 <@951411435370582016>", [1,2,4,5,6], channel_id))  # 
-schedule.every().day.at("22:00").do(lambda: schedule_job(f"{cont}\n 22:00です。配信の時刻としては理想的でしょう。 <@951411435370582016>", [1,2,4,5,6], channel_id))  # 
+schedule.every().day.at("21:30").do(lambda: schedule_job(f"{cont}\n 21:30です。配信の調子はいかがでしょうか。 <@1018781055215468624>", [1,2,4,5,6], channel_id))  # 
+schedule.every().day.at("22:00").do(lambda: schedule_job(f"{cont}\n 22:00です。配信の時刻としては理想的でしょう。 <@1018781055215468624>", [1,2,4,5,6], channel_id))  # 
 
 def run_schedule():
     while True:
@@ -447,6 +447,7 @@ schedule_thread.start()
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
