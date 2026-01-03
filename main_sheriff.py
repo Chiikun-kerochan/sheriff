@@ -88,6 +88,7 @@ async def read_text(text):
 
 @client.event
 async def on_message(message):
+    global is_phalen_wakeup
     if message.author == client.user:
         return
     guild = message.guild
@@ -96,6 +97,7 @@ async def on_message(message):
     
     # ここで重い処理をバックグラウンドで開始
     if message.author == ph and message.channel == zatsudan and message.content == "はじめます":
+        is_phalen_wakeup = False
         asyncio.create_task(hajime_process(guild, zatsudan, ph,  message))
     #読み上げbotの機能
     if guild.voice_client :
@@ -417,15 +419,20 @@ async def send_msg(mes,channel_id:int): # メッセージを送れる汎用関�
             print("channel is not found.")
     except Exception as e:
         print(f"exception error : {e}")
+is_phalen_wakeup = True
 
 async def job(msg, channel_id):
     now = datetime.datetime.now()
     print(str(now) + " 通知した")
     await send_msg(msg, channel_id)
 
+def reset_alarm():
+    global is_phalen_wakeup
+    is_phalen_wakeup = True
+
 def schedule_job(msg, weekdays, channel_id):
     now = datetime.datetime.now()
-    if now.weekday() in weekdays:
+    if now.weekday() in weekdays and is_phalen_wakeup is True:
         client.loop.call_soon_threadsafe(asyncio.create_task,job(msg,channel_id))
 
 # スケジュール設定 ここの部分で個別に設定していく
@@ -439,7 +446,7 @@ schedule.every().day.at("13:00").do(lambda: schedule_job(f"{cont}\n 22:00です�
 schedule.every().day.at("13:10").do(lambda: schedule_job(f"{cont}\n 22:10です。配信予定時刻から10分遅れています。 <@1018781055215468624>", [1,2,4,5,6], channel_id))
 schedule.every().day.at("13:20").do(lambda: schedule_job(f"{cont}\n 22:20です。配信予定時刻から20分遅れています。 <@1018781055215468624>", [1,2,4,5,6], channel_id))
 schedule.every().day.at("13:30").do(lambda: schedule_job(f"{cont}\n 22:30です。配信予定時刻から30分遅れています。生存確認のため警察に連絡しますか？ y or n <@1018781055215468624>", [1,2,4,5,6], channel_id))
-
+schedule.every().day.at("17:00").do(lambda: reset_alarm())
 def run_schedule():
     while True:
         schedule.run_pending()
@@ -451,4 +458,5 @@ schedule_thread.start()
 
 keep_alive()
 client.run(TOKEN)
+
 
