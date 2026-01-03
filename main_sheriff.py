@@ -171,8 +171,276 @@ async def m_ai(interaction:discord.Interaction, text : str):
     # APIを利用
     await interaction.followup.send(f"あなたの質問 : {text}\n回答 : {responce.text}")
 
+def get_poll_gf(form_ID:str):
+    SCOPES = "https://www.googleapis.com/auth/forms.responses.readonly"
+    DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
+
+# JSONキーファイルの名前
+    SERVICE_ACCOUNT_FILE = 'phalen-discord-bot-29a372261478.json' 
+# 💡 認証情報をファイルから直接ロード（ブラウザ不要）
+    creds = service_account.ServiceAccountCredentials.from_json_keyfile_name(
+        SERVICE_ACCOUNT_FILE, 
+        scopes=SCOPES
+    )
+    service = discovery.build(
+        "forms",
+        "v1",
+        # ロードした認証情報をhttpオブジェクトに適用
+        http=creds.authorize(Http()),
+        discoveryServiceUrl=DISCOVERY_DOC,
+        static_discovery=False,
+    )
+    # Prints the responses:
+    
+    form_id =  form_ID   #"1g0HaDgmvyABvrYFYVGSdUmUMPWPRWq9MEijXGSxzcAE"
+    # フォームの回答一覧を取得
+    result = service.forms().responses().list(formId=form_id).execute()
+
+
+    ordict = {}
+    ordict.update(result)
+    res_opt = []
+    for i in range(len(ordict['responses'])):  #解答者数を長さとして指定
+        new_dict = ordict['responses'][i]["answers"]
+        key_view = list(new_dict.keys()) #質問IDをリスト化
+        #print(f"{i+1}人目の解答")
+        for k in range(len(key_view)):   #質問数を指定
+            c = new_dict[f"{key_view[k]}"]["textAnswers"]["answers"]
+            len_opt = len(c)
+            for j in range(len(c)):
+                res_opt.append(c[j]["value"])
+
+    return res_opt
+
+@tree.command(name="poll_viewer",description="formはGoogleFormのid、pollにそのメッセージIDを")
+async def povw(interaction: discord.Interaction,form_id : str, poll1 : str, poll2 : str = None ): #tetで日時
+    await interaction.response.defer(thinking=True)
+    channel = interaction.channel
+    mess = await channel.fetch_message(int(poll1))
+    mess_counter = len(mess.poll.answers)
+    
+    
+    if mess.poll:
+        pl_opt = []
+        pl_count = []
+        for i in range(1,mess_counter + 1):
+            pl_opt.append(mess.poll.get_answer(id=i).text) #選択肢の名前
+            pl_count.append(mess.poll.get_answer(id=i).vote_count) #その選択肢に投票された数
+        
+        desc = "DiscordアンケートとGoogle Formを合わせた集計"
+        emb = discord.Embed(title="アンケート集計結果",description=desc,type="rich",color=0xff9300)
+
+        discord.PollAnswer.text
+        if mess.poll.is_finalized  :
+            vict_ans_count = max(pl_count) #discordの最多票
+            vict_ans_index = pl_count.index(max(pl_count))
+            vict_ans_opt = pl_opt[vict_ans_index] #discord最多票の選択肢
+            emb.add_field(name="質問1の結果",value="以下のようになりました",inline=False)
+
+            for k in range(len(pl_opt)):
+                gf_count = get_poll_gf(form_ID=form_id)
+                gfl = gf_count.count(f"{pl_opt[k]}") #その項目のGoogle Formでの選択数
+                rtco = gfl + pl_count[k]
+                emb.add_field(name=pl_opt[k],value= f"{rtco}票 ({pl_count[k]}+{gfl})",inline=False)
+            await interaction.followup.send(embed=emb)
+        else:
+            await interaction.response.send_message("poll has not been finalized")
+
+    else:
+        await interaction.response.send_message("this is not a poll")
+
+    if poll2 is not None:
+        channel = interaction.channel
+        mess = await channel.fetch_message(int(poll2))
+        mess_counter = len(mess.poll.answers)
+    
+    
+        if mess.poll:
+            pl_opt = []
+            pl_count = []
+            for i in range(1,mess_counter + 1):
+                pl_opt.append(mess.poll.get_answer(id=i).text) #選択肢の名前
+                pl_count.append(mess.poll.get_answer(id=i).vote_count) #その選択肢に投票された数
+        
+            desc = "DiscordアンケートとGoogle Formを合わせた集計"
+            emb = discord.Embed(title="アンケート集計結果",description=desc,type="rich",color=0xFF0000)
+
+            discord.PollAnswer.text
+            if mess.poll.is_finalized :
+                vict_ans_count = max(pl_count) #discordの最多票
+                vict_ans_index = pl_count.index(max(pl_count))
+                vict_ans_opt = pl_opt[vict_ans_index] #discord最多票の選択肢
+
+                emb.add_field(name="質問2の結果",value="以下のようになりました",inline=False)
+                for k in range(len(pl_opt)):
+                    gf_count = get_poll_gf(form_ID=form_id)
+                    o2o = gf_count.count(f"{pl_opt[k]}") #その項目のGoogle Formでの選択数
+                    gfl2 = pl_count[k] + o2o
+                    emb.add_field(name=pl_opt[k],value= f"{gfl2}票 ({pl_count[k]}+{o2o})",inline=False)
+                await interaction.followup.send(embed=emb)
+
+def makegf(cont:list ,itemID,formIDs,ind,checkbox:str):
+    SCOPES = "https://www.googleapis.com/auth/forms.body"
+    DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
+    SERVICE_ACCOUNT_FILE = 'phalen-discord-bot-29a372261478.json'
+    #store = file.Storage("token.json")
+    creds = service_account.ServiceAccountCredentials.from_json_keyfile_name(
+            SERVICE_ACCOUNT_FILE, 
+            scopes=SCOPES)
+
+    form_service = discovery.build(
+        "forms",
+        "v1",
+        http=creds.authorize(Http()),
+        discoveryServiceUrl=DISCOVERY_DOC,
+        static_discovery=False,
+    )
+
+
+# Request body to add a multiple-choice question
+    item_id = itemID #checkboxは便宜上そうした。RADIOなどを入れられる。
+    NEW_QUESTION = {
+        "requests": [
+            {
+                "updateItem": {
+                    "item": {
+                        "itemId": item_id,
+                        "questionItem": {
+                            "question": {
+                                "required": True,
+                                "choiceQuestion": {
+                                    "type": checkbox,
+                                    "options": [
+
+                                    ]
+                                    ,
+                                    "shuffle": False,
+                                },
+                            }
+                        },
+                    },
+                    "location": {"index": ind},
+                    "updateMask": "questionItem"
+                }
+            
+            }
+        ]
+    }
+    NEW_QUESTION["requests"][0]["updateItem"]["item"]["questionItem"]["question"]["choiceQuestion"]["options"].append(cont)
+
+    form_id = formIDs
+    try:
+        form_service.forms().batchUpdate(formId=form_id, body=NEW_QUESTION).execute()
+        print(f"\n✅ 成功: アイテムID '{item_id}' の選択肢を変更しました。")
+        
+    except HttpError as e:
+            print(f"❌ 更新エラー: {e}")
+
+
+
+@tree.command(name="make_google_form",description="質問に対応したGoogleフォームを作成。when:日時,what：内容に対応したメッセージのidを入力してください")
+async def mkgf(inter:discord.Interaction, password:str, when:str, what:str ):
+    await inter.response.defer(thinking=True)
+    channel = inter.channel
+    mess = await channel.fetch_message(int(when))
+    mess_counter = len(mess.poll.answers)
+    
+    channelB = inter.channel
+    messB = await channelB.fetch_message(int(what))
+    mess_counterB = len(messB.poll.answers)
+    pl_opt = []
+    value1 = []
+    pl_optB = []
+    value1B = []
+    if mess.poll and password == "a": #日時だけのとき
+        for i in range(1,mess_counter+1 ):
+            pl_opt.append(mess.poll.get_answer(id=i).text) #選択肢の名前 
+            value = {}    
+            value["value"] = pl_opt[i-1]
+            value1.append(value)
+        try:
+            print(value1)
+            makegf(cont=value1,itemID="4e7a81f9",formIDs="1g0HaDgmvyABvrYFYVGSdUmUMPWPRWq9MEijXGSxzcAE",ind=1,checkbox="CHECKBOX")#両方あるフォーム
+        except HttpError as e :
+            await inter.followup.send(content= f"{e}")
+    if  messB.poll and password == "a" :
+        for k in range(1,mess_counterB+1 ):
+            pl_optB.append(messB.poll.get_answer(id=k).text) #選択肢の名前 
+            valueB = {}    
+            valueB["value"] = pl_optB[k-1]
+            value1B.append(valueB)  
+        try:    
+            print(value1B)
+            makegf(cont=value1B,itemID="38bef855",formIDs="1g0HaDgmvyABvrYFYVGSdUmUMPWPRWq9MEijXGSxzcAE",ind=2,checkbox="CHECKBOX")#下の段の質問
+            await inter.followup.send(content= "https://docs.google.com/forms/d/e/1FAIpQLScPeI6gnYC3_1I8lwQkzuNbdCHuVuAyL7iz6YuMjNkA4vljsw/viewform?usp=header")
+        except HttpError as e:
+            print(f"{e}")
+
+@tree.command(name="make_gf_date",description="質問に対応したGoogleフォームを作成。when:日時に対応したメッセージのidを入力してください")
+async def mkgf_date(inter:discord.Interaction, password:str, when:str):
+    await inter.response.defer(thinking=True)
+    channel = inter.channel
+    mess = await channel.fetch_message(int(when))
+    mess_counter = len(mess.poll.answers)
+    pl_opt = []
+    value1 = []
+    if mess.poll and password == "a": #日時だけのとき
+        for i in range(1,mess_counter+1 ):
+            pl_opt.append(mess.poll.get_answer(id=i).text) #選択肢の名前 
+            value = {}    
+            value["value"] = pl_opt[i-1]
+            value1.append(value)
+        try:
+            print(value1)
+            makegf(cont=value1,itemID="71923339",formIDs="1VnRjoBxYO85j_Kp1D_Ck71qumGMgJRKwk8nIlp-vSM0",ind=1,checkbox="RADIO")
+            await inter.followup.send(content= "https://forms.gle/8K1Vf4RFwmVqQHb37")
+        except HttpError as e :
+            await inter.followup.send(content= f"{e}")
+
+
+
+
+async def send_msg(mes,channel_id:int): # メッセージを送れる汎用関数
+    try:
+        channel = client.get_channel(channel_id)
+        if channel :
+            await channel.send(content=f"{mes}")
+            print("メッセージを送信しました")
+        else:
+            print("channel is not found.")
+    except Exception as e:
+        print(f"exception error : {e}")
+
+async def job(msg, channel_id):
+    now = datetime.datetime.now()
+    print(str(now) + " 通知した")
+    await send_msg(msg, channel_id)
+
+def schedule_job(msg, weekdays, channel_id):
+    now = datetime.datetime.now()
+    if now.weekday() in weekdays:
+        client.loop.call_soon_threadsafe(asyncio.create_task,job(msg,channel_id))
+
+# スケジュール設定 ここの部分で個別に設定していく
+channel_id = 1456890395970768951
+cont = "https://media.discordapp.net/attachments/1160135713480785921/1181510300034400339/140_20231205171931.png?ex=695979f6&is=69582876&hm=8b9f8c771b598fc1abde8c89f036e629633bacc69cb13e80a169b5b7a659095f&=&format=webp&quality=lossless"
+Use = client.get_channel(channel_id)
+
+schedule.every().day.at("16:51").do(lambda: schedule_job(f"{cont}\n 21:30(仮)です。配信の調子はいかがでしょうか。 <@951411435370582016>", [1,2,4,5,6], channel_id))  # 
+schedule.every().day.at("22:00").do(lambda: schedule_job(f"{cont}\n 22:00(仮)です。配信の時刻としては理想的でしょう。 <@951411435370582016>", [1,2,4,5,6], channel_id))  # 
+
+def run_schedule():
+    while True:
+        schedule.run_pending()
+        time.sleep(6) # 60秒に一度判定を行う
+
+schedule_thread = threading.Thread(target=run_schedule)
+schedule_thread.start()
+
+
 keep_alive()
 client.run(TOKEN)
+
 
 
 
