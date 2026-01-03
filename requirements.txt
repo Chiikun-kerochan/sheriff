@@ -14,10 +14,10 @@ google
 
 datetime
 schedule
-threading
 apiclient
 asyncio
 
 google-api-core==2.25.1
 google-api-python-client==2.187.0
 googleapis-common-protos==1.70.0
+
