@@ -456,7 +456,88 @@ schedule_thread = threading.Thread(target=run_schedule)
 schedule_thread.start()
 
 
+# 為替レートを取得
+def get_rate(ticker_symbol):
+    try:
+        data = yf.Ticker(ticker_symbol).history(period="1d")
+        if not data.empty:
+            return data['Close'].iloc[-1]
+        return 0.0
+    except:
+        return 0.0
+    
+
+
+
+def get_YTchat(URL,Keyword):
+    livechat = pytchat.create(video_id = URL) #URLのやつを入れる
+    money_totals = {"¥": 0.0, "$": 0.0, "NT$": 0.0, "KRW": 0.0, "€":0.0}
+    text_in = []
+    superchater = []
+    while livechat.is_alive():
+        chatdata = livechat.get()
+        if not chatdata.items:
+        # アーカイブで、一定時間データが来なければ終了
+            pass
+    # チャットデータの取得
+        for c in chatdata.items:
+            text_in.append({"Time":c.elapsedTime,"author":c.author.name,"message":c.message})
+        #print(f"{c.datetime} {c.author.name} {c.message} {c.amountString} {c.currency}")
+        
+        # 通貨が辞書にあれば加算
+            if c.currency in money_totals:
+                money_totals[c.currency] += c.amountValue
+                superchater.append(f"[{c.currency}] {c.amountString} - {c.author.name}")
+            elif c.currency == "₩" or "W" in c.amountString :
+                money_totals[c.currency] += c.amountValue
+            elif c.amountValue > 0:
+            # 未登録の通貨が来た場合
+                superchater.append(f"未対応の通貨: [{c.currency}] ({c.amountString}) - {c.author.name}")
+    rates = {
+        "¥": 1.0,
+        "$": get_rate("USDJPY=X"),
+        "NT$": get_rate("TWDJPY=X"),
+        "KRW": get_rate("KRWJPY=X"),
+        "€": get_rate("EURJPY=X")
+        }
+
+    grand_total = 0.0
+    for cur, amount in money_totals.items():
+        converted = amount * rates[cur]
+        grand_total += converted
+
+    keyword_list = [i for i in text_in if Keyword in i["message"] ]
+    
+    return keyword_list,grand_total,superchater
+
+@tree.command(name="search_comment",description="Youtubeでのコメントの検索と収入の計算")
+async def getch(interaction:discord.Interaction,url:str,keyword:str):
+    await interaction.response.defer(thinking=False)
+    ############
+    text = url
+    Keyword = "https://www.youtube.com/watch?v="
+    n = 11  # 後ろの5文字
+    if Keyword in text:
+    # キーワードが始まる位置を見つける
+        start_index = text.index(Keyword)
+        extract_start = start_index + len(Keyword)
+        result = text[extract_start : extract_start + n]
+    ############
+
+    keyw,total,superchat = get_YTchat(result,keyword)
+    cont = "【チャット欄のキーワード検索結果】\n"
+    cont += f"キーワード：{keyword}\n"
+    for p in keyw:
+        cont += f"{str(p)}\n"
+    cont += "【スパチャを送ってくれた人】\n"
+    for i in superchat:
+        cont += f"{str(i)}\n"
+    cont += "【ふぁれんの収入】\n"
+    cont+= f"{total}円"
+    await interaction.followup.send(content=cont)
+
 keep_alive()
 client.run(TOKEN)
+
 
 
