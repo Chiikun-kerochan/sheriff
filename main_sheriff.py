@@ -534,10 +534,14 @@ async def getch(interaction:discord.Interaction,url:str,keyword:str):
         cont += f"{str(i)}\n"
     cont += "【ふぁれんの収入】\n"
     cont+= f"{total}円"
-    await interaction.followup.send(content=cont)
+    if len(cont) < 1999:
+        await interaction.followup.send(content=cont)
+    else:
+        await interaction.followup.send(content="文字数が2000を超えるためもう少し絞りやすいキーワードに変更してください")
 
 keep_alive()
 client.run(TOKEN)
+
 
 
 
